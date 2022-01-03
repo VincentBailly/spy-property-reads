@@ -1,7 +1,7 @@
 # Spy-property-reads
 
 JavaScript offers various ways for an object to store another object.
-This library help spy on all the ways in which other objects are extracted from a given object
+This library give a uniform way to trap the various ways in which properties are extracted from an object.
 
 ## Usage
 
@@ -15,6 +15,7 @@ const o = { a: 42, b: 42 }
 
 const spyCallback = function(source, query, result) {
   console.log({ query, result })
+  return result
 }
 
 const handler = spyPropertyReads(spyCallback)
@@ -42,6 +43,7 @@ const o = function() { return 42 }
 
 const spyCallback = function(source, query, result) {
   console.log({ query, result })
+  return result
 }
 
 const handler = spyPropertyReads(spyCallback)
@@ -54,29 +56,53 @@ spy()
 
 ```
 
-### Spy on function arguments
-
-This scenario may seem convoluted but this is what happens when
-we pass a callback to a promise's ".then" method to extract the
-value from the promise.
+### Spy property descriptors
 
 ```javascript
 
 const { spyPropertyReads } = require('spy-property-reads')
 
-const o = function(callback) { callback(42); return 'callback called' }
+const o = {
+  a: 42,
+  get b() { return 10 }
+}
 
 const spyCallback = function(source, query, result) {
   console.log({ query, result })
+  return result
 }
 
 const handler = spyPropertyReads(spyCallback)
 const spy = new Proxy(o, handler)
 
-// accessing 42 through the arguments of a function
-spy((arg) => { arg === 42 })
-// => 'callback called'
-//  console.log() => { query: 'arg1(apply(arg1(apply())))', result: 42 } 
+Object.getOwnPropertyDescriptor(spy, 'a').value
+// => 42
+//  console.log() => { query: 'getOwnPropertyDescriptor("a").value', result: 42 } 
+
+Object.getOwnPropertyDescriptor(spy, 'a').get()
+// => 10
+//  console.log() => { query: 'getOwnPropertyDescriptor("b").get()', result: 10 } 
+```
+
+### Spy access to the prototype
+
+```javascript
+
+const { spyPropertyReads } = require('spy-property-reads')
+
+const o = Object.create({ foo: 'bar' })
+
+const spyCallback = function(source, query, result) {
+  console.log({ query, result })
+  return result
+}
+
+const handler = spyPropertyReads(spyCallback)
+const spy = new Proxy(o, handler)
+
+Object.getPrototypeOf(spy)
+// => { foo: 'bar' }
+//  console.log() => { query: 'getPrototypeOf()', result: { foo: 'bar' } } 
 
 ```
 
@@ -96,6 +122,7 @@ const handler1 = { get: () => 42 }
 
 const spyCallback = function(source, query, result) {
   console.log({ query, result })
+  return result
 }
 // 2 - spy on property reads
 const handler2 = spyPropertyReads(spyCallback, handler1)
