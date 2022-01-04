@@ -77,3 +77,23 @@ tap.test('property descriptors are trapped', t => {
 
   t.end()
 })
+
+tap.test('prototype getter is trapped', t => {
+  const o = Object.create({ foo: 'bar' })
+
+  const calls = []
+  const spyCallback = function(source, query, result) {
+    calls.push({ source, query, result })
+    return { foo: 'baz' }
+  }
+
+  const handler = spyPropertyReads(spyCallback)
+  const spy = new Proxy(o, handler)
+
+  t.equal(Object.getPrototypeOf(spy).foo, 'baz')
+  t.equal(calls[0].source, o)
+  t.equal(calls[0].query, 'getPrototypeOf()')
+  t.equal(calls[0].result.foo, 'bar')
+
+  t.end()
+})

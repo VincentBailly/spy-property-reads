@@ -30,6 +30,11 @@ exports.spyPropertyReads = function(callback) {
         }
         return desc
       }
-    }
+    },
+    getPrototypeOf: (target) => {
+      const r = Reflect.getPrototypeOf(target)
+      const result = callback(target, `getPrototypeOf()`, r)
+      return result
+    },
   }
 }
