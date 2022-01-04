@@ -79,7 +79,7 @@ Object.getOwnPropertyDescriptor(spy, 'a').value
 // => 42
 //  console.log() => { query: 'getOwnPropertyDescriptor("a").value', result: 42 } 
 
-Object.getOwnPropertyDescriptor(spy, 'a').get()
+Object.getOwnPropertyDescriptor(spy, 'b').get()
 // => 10
 //  console.log() => { query: 'getOwnPropertyDescriptor("b").get()', result: 10 } 
 ```
