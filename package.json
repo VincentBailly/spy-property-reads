@@ -1,4 +1,20 @@
 {
+  "name": "spy-property-reads",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VincentBailly/spy-property-reads.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VincentBailly/spy-property-reads/issues"
+  },
+  "homepage": "https://github.com/VincentBailly/spy-property-reads#readme",
   "devDependencies": {
     "tap": "^15.1.5"
   }
