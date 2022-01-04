@@ -13,7 +13,8 @@ const { spyPropertyReads } = require('spy-property-reads')
 
 const o = { a: 42, b: 42 }
 
-const spyCallback = function(source, query, result) {
+const spyCallback = function(source, query, getResult) {
+  const result = getResult()
   console.log({ query, result })
   return result
 }
@@ -41,7 +42,8 @@ const { spyPropertyReads } = require('spy-property-reads')
 
 const o = function() { return 42 }
 
-const spyCallback = function(source, query, result) {
+const spyCallback = function(source, query,  getResult) {
+  const result = getResult()
   console.log({ query, result })
   return result
 }
@@ -67,7 +69,8 @@ const o = {
   get b() { return 10 }
 }
 
-const spyCallback = function(source, query, result) {
+const spyCallback = function(source, query,  getResult) {
+  const result = getResult()
   console.log({ query, result })
   return result
 }
@@ -92,7 +95,8 @@ const { spyPropertyReads } = require('spy-property-reads')
 
 const o = Object.create({ foo: 'bar' })
 
-const spyCallback = function(source, query, result) {
+const spyCallback = function(source, query,  getResult) {
+  const result = getResult()
   console.log({ query, result })
   return result
 }
@@ -120,7 +124,8 @@ const o = {}
 // 1 - every property return 42
 const handler1 = { get: () => 42 }
 
-const spyCallback = function(source, query, result) {
+const spyCallback = function(source, query, getResult) {
+  const result = getResult()
   console.log({ query, result })
   return result
 }
@@ -152,3 +157,27 @@ spy.secret
 // No call to "console.log"
 
 ```
+
+## API
+
+### spyPropertyReads(callback, handler)
+
+#### callback
+
+A function which takes 3 arguments and returns the property querried.
+
+Arguments:
+
+1 - source: the object being spied
+2 - query: a string representation of the function which triggered the callback
+3 - getResult: a function which returns the property querried.
+
+The reading operation on the spied object will return the value returned by the callback. To keep the return value unchanged, return the value returned by getResult(). Aternatively, we can modify the value, substitute it, or not call getResult at all and return something totally different.
+
+#### handler (optional)
+
+A proxy handler which will be wrapped. This permits to create sophisticated proxy behaviors by composing simple handlers together.
+
+### Return value
+
+This function return a proxy handler. A proxy can be instanciated with this handler or with another handler which adds more features to the proxy by wrapping it.
