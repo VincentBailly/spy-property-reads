@@ -178,6 +178,6 @@ The reading operation on the spied object will return the value returned by the 
 
 A proxy handler which will be wrapped. This permits to create sophisticated proxy behaviors by composing simple handlers together.
 
-### Return value
+#### Return value
 
-This function return a proxy handler. A proxy can be instanciated with this handler or with another handler which adds more features to the proxy by wrapping it.
+This function returns a proxy handler. A proxy can be instanciated with this handler or with another handler which wraps it to adds more features.
