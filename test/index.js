@@ -27,3 +27,24 @@ tap.test('getters are trapped', t => {
   t.equal(calls[1].result, 41)
   t.end()
 })
+
+tap.test('function calls are trapped', t => {
+  const o = function() { return 42 }
+
+  const calls = []
+  const spyCallback = function(source, query, result) {
+    calls.push({ query, result })
+    return result
+  }
+
+  const handler = spyPropertyReads(spyCallback)
+  const spy = new Proxy(o, handler)
+
+  // accessing 42 by calling the function
+  t.equal(spy(), 42)
+  t.equal(calls[0].query, 'apply()')
+  t.equal(calls[0].result, 42)
+  // => 42
+  //  console.log() => { query: 'apply()', result: 42 } 
+  t.end()
+})
