@@ -6,7 +6,7 @@ tap.test('getters are trapped', t => {
 
   const calls = []
   const spyCallback = function(source, query, result) {
-    calls.push({ query, result })
+    calls.push({ source, query, result })
     if (result === 41) {
       // testing that we can override results
       return 21
@@ -19,10 +19,12 @@ tap.test('getters are trapped', t => {
 
   // accessing 42 using the property 'a'
   t.equal(spy.a, 42, 'property getter work')
+  t.equal(calls[0].source, o)
   t.equal(calls[0].query, 'get("a")')
   t.equal(calls[0].result, 42)
 
   t.equal(spy.b, 21, 'property getter work')
+  t.equal(calls[1].source, o)
   t.equal(calls[1].query, 'get("b")')
   t.equal(calls[1].result, 41)
   t.end()
@@ -33,15 +35,16 @@ tap.test('function calls are trapped', t => {
 
   const calls = []
   const spyCallback = function(source, query, result) {
-    calls.push({ query, result })
-    return result
+    calls.push({ source, query, result })
+    return 41
   }
 
   const handler = spyPropertyReads(spyCallback)
   const spy = new Proxy(o, handler)
 
   // accessing 42 by calling the function
-  t.equal(spy(), 42)
+  t.equal(spy(), 41)
+  t.equal(calls[0].source, o)
   t.equal(calls[0].query, 'apply()')
   t.equal(calls[0].result, 42)
   // => 42
