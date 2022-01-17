@@ -9,6 +9,7 @@ exports.spyPropertyReads = function(callback, handler = {}) {
   }
 
   return {
+    ...handler,
     get: (target, prop, receiver) => {
       const r = reflect('get', target, prop, receiver)
       const result = callback(target, `get("${prop}")`, r)

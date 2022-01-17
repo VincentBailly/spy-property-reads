@@ -105,7 +105,8 @@ tap.test('prototype getter is trapped', t => {
 tap.test('composing proxy handlers', t => {
   const o = {}
   // 1 - every property return 42
-  const handler1 = { get: () => 42 }
+  let setterCalled = false
+  const handler1 = { get: () => 42, set: () => { setterCalled = true; return true } }
 
   const calls = []
   const spyCallback = function(source, query, getResult) {
@@ -145,6 +146,9 @@ tap.test('composing proxy handlers', t => {
 
   t.equal(spy.secret, 'foo')
   t.equal(calls.length, 3)
+
+  spy.a = 3
+  t.ok(setterCalled)
 
   t.end()
 })
