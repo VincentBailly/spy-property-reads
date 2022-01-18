@@ -12,7 +12,7 @@ exports.spyPropertyReads = function(callback, handler = {}) {
     ...handler,
     get: (target, prop, receiver) => {
       const r = reflect('get', target, prop, receiver)
-      const result = callback(target, `get("${prop}")`, r)
+      const result = callback(target, `get("${prop.toString()}")`, r)
       return result
     },
     apply: (target, thisArg, args) => {
@@ -26,7 +26,7 @@ exports.spyPropertyReads = function(callback, handler = {}) {
         return {
           ...desc,
           get value() {
-            return callback(target, `getOwnPropertyDescriptor("${prop}").value`, () => desc.value)
+            return callback(target, `getOwnPropertyDescriptor("${prop.toString()}").value`, () => desc.value)
           }
         }
       }
@@ -34,7 +34,7 @@ exports.spyPropertyReads = function(callback, handler = {}) {
         return {
           ...desc,
           get() {
-            return callback(target, `getOwnPropertyDescriptor("${prop}").get()`, desc.get)
+            return callback(target, `getOwnPropertyDescriptor("${prop.toString()}").get()`, desc.get)
           }
         }
         return desc
