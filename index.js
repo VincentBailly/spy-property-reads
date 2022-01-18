@@ -22,6 +22,7 @@ exports.spyPropertyReads = function(callback, handler = {}) {
     },
     getOwnPropertyDescriptor: (target, prop) => {
       const desc = reflect('getOwnPropertyDescriptor', target, prop)()
+      if (!desc) { return desc }
       if (desc.value !== undefined) {
         return {
           ...desc,
